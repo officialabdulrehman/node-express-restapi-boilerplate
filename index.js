@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 import session from "express-session";
 import { recievers } from "./recievers";
 import { MONGODB_URI, PORT, SESSION_SECRET } from "./utils/secrets";
