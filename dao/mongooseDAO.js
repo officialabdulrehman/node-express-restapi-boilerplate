@@ -40,7 +40,7 @@ export class MongooseDAO {
     }
     if (perPage < 1) {
       const error = new Error("perPage cannot be smaller than 1");
-      error.data = [{ param: page }];
+      error.data = [{ param: perPage }];
       error.code = 400;
       throw error;
     }
@@ -65,6 +65,7 @@ export class MongooseDAO {
     const res = data.map((dbObject) =>
       extractFields(this.createDTO(), dbObject)
     );
+
     const result = {
       data: res,
       pagination: {
@@ -82,9 +83,15 @@ export class MongooseDAO {
   async findById(Id, populate = []) {
     const id = ID(Id);
     const result = await this.find({ _id: id }, 1, 1, populate);
-    if (!result) {
+    if (result.data.length <= 0) {
       const error = new Error(`Record with id ${id} not found.`);
-      error.data = [{ param: id }];
+      error.data = [
+        {
+          param: "id",
+          location: "dao findById",
+          value: id,
+        },
+      ];
       error.code = 404;
       throw error;
     }
@@ -102,7 +109,13 @@ export class MongooseDAO {
     const result = await this.model.findByIdAndDelete(id);
     if (!result) {
       const error = new Error(`Record with id ${id} not found.`);
-      error.data = [{ param: id }];
+      error.data = [
+        {
+          param: "id",
+          location: "dao delete",
+          value: id,
+        },
+      ];
       error.code = 404;
       throw error;
     }
@@ -110,10 +123,23 @@ export class MongooseDAO {
   }
 
   async findByIdAndUpdate(id, record) {
-    const result = await this.model.findByIdAndUpdate(id, record, {
-      new: true,
-    });
-    return extractFields(this.createDTO(), result);
+    try {
+      const result = await this.model.findByIdAndUpdate(id, record, {
+        new: true,
+      });
+      return extractFields(this.createDTO(), result);
+    } catch (e) {
+      const error = new Error(e);
+      error.data = [
+        {
+          param: "id",
+          location: "dao findByIdAndUpdate",
+          value: id,
+        },
+      ];
+      error.code = 404;
+      throw error;
+    }
   }
 }
 export default MongooseDAO;

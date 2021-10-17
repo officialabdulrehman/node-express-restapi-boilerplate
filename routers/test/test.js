@@ -3,7 +3,7 @@
 // import { restApiValidation, response } from "../../utils/helpers";
 // import { checkParamId } from "../../middlewares/commonMiddlewares";
 // import {
-//   userSignupInputValidator,
+//   SignupValidator,
 //   emailValidator,
 // } from "../../middlewares/userInputMiddlewares";
 
@@ -22,7 +22,7 @@
 //   response(res, result);
 // });
 
-// testRouter.post("/", [...userSignupInputValidator], async (req, res, next) => {
+// testRouter.post("/", [...SignupValidator], async (req, res, next) => {
 //   if (!restApiValidation(req, next)) return next();
 //   const result = await userDAO.create({ ...req.body });
 //   response(res, result);

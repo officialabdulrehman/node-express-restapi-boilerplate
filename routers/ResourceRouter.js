@@ -34,7 +34,7 @@ export class ResourceRouter extends RouterClass {
         await check(k, `${k} is invalid`).optional().run(req);
         continue;
       }
-      await check(k, `${k} is invalid or - Here ?`).exists().run(req);
+      await check(k, `${k} is invalid`).exists().run(req);
     }
   }
 

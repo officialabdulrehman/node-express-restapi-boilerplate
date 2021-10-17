@@ -65,3 +65,30 @@ export const mongoID = (value, { path }) => {
     throw new Error(msg);
   }
 };
+
+export const defaultErrorHandler = (err, req, res, next) => {
+  const { code, message, data } = err;
+  let statusCode = code;
+  if (statusCode == 11000) statusCode = 409;
+  res.status(statusCode || 500).json({
+    message,
+    result: {},
+    errors: data
+      ? data.map(({ param = "", location = "", value = "", message = "" }) => {
+          return {
+            message,
+            param,
+            location,
+            value,
+          };
+        })
+      : [
+          {
+            message: "",
+            param: "",
+            location: "",
+            value: "",
+          },
+        ],
+  });
+};

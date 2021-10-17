@@ -11,6 +11,8 @@ import { UserDTO } from "../../dto/user/User.dto";
 
 import _ from "lodash";
 
+import { AuthMiddleware } from "../../middlewares/authMiddleware";
+
 class UserRouter extends ResourceRouter {
   GETID(path, middleware, callback) {
     middleware = [...middleware];
@@ -43,14 +45,18 @@ class UserRouter extends ResourceRouter {
   }
 }
 
-export const userRouter = new UserRouter(new UserDTO(), userService);
+export const userRouter = new UserRouter(new UserDTO(), userService, []);
 export default userRouter;
 
-userRouter.post("/user/signup", [], async (req, res, next) => {
-  restApiValidation(req, next);
-  const result = {
-    ...req.body,
-    message: "success",
-  };
-  response(res, result);
-});
+userRouter.post(
+  "/user/test/auth-token",
+  [AuthMiddleware()],
+  async (req, res, next) => {
+    restApiValidation(req, next);
+    const result = {
+      ...req.body,
+      message: "success",
+    };
+    response(res, result);
+  }
+);

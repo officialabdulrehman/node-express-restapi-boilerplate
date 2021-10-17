@@ -1,29 +1,56 @@
 import jwt from "jsonwebtoken";
 import { AUTH_HEADER, SERVER_SECRET } from "../utils/secrets";
 
-export const graphqlAuthMiddleware = () => {
+export const AuthMiddleware = (roles = []) => {
   return (req, res, next) => {
     let decodedToken = null;
+
     const authHeader = req.get(AUTH_HEADER);
+
     if (!authHeader) {
-      req.isAuth = false;
-      return next();
+      const error = new Error("Header containing token missing");
+      error.data = [
+        {
+          param: "token",
+          location: "header",
+          value: "",
+        },
+      ];
+      error.code = 401;
+      return next(error);
     }
     try {
       const token = req.get(AUTH_HEADER).split(" ")[1];
       decodedToken = jwt.verify(token, SERVER_SECRET);
     } catch (err) {
-      req.isAuth = false;
-      return next();
+      const error = new Error("Invalid Token");
+      error.data = [
+        {
+          param: "token",
+          location: "header",
+          value: authHeader,
+        },
+      ];
+      error.code = 401;
+      return next(error);
     }
     if (!decodedToken) {
-      req.isAuth = false;
-      return next();
+      const error = new Error("Unidentified Token");
+      error.data = [
+        {
+          param: "token",
+          location: "header",
+          value: authHeader,
+        },
+      ];
+      error.code = 401;
+      return next(error);
     }
-    req.userId = decodedToken.userId;
-    req.isAuth = true;
-    return next();
+
+    console.log(decodedToken);
+    req.user = decodedToken.user;
+    next();
   };
 };
 
-export default graphqlAuthMiddleware;
+export default AuthMiddleware;

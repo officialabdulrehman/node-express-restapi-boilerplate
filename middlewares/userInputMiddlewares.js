@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 
-export const userSignupInputValidator = [
+export const SignupValidator = [
   check("email", "Please enter a valid email").isEmail().normalizeEmail(),
   check("password", "Password must contain at least 8 characters")
     .trim()

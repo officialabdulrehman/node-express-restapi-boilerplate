@@ -11,6 +11,7 @@ export const PORT = process.env.PORT;
 export const AUTH_HEADER = process.env["AUTH_HEADER"];
 export const SERVER_SECRET = process.env["SERVER_SECRET"];
 export const SESSION_SECRET = process.env["SESSION_SECRET"];
+export const JWT_ALGORITHM = process.env["JWT_ALGORITHM"];
 export const ACCESS_TOKEN_EXPIRATION_TIME =
   process.env["ACCESS_TOKEN_EXPIRATION_TIME"];
 
@@ -44,4 +45,8 @@ if (!SESSION_SECRET) {
 
 if (!SERVER_SECRET) {
   throw new Error("No SERVER_SECRET. Set SERVER_SECRET environment variable.");
+}
+
+if (!JWT_ALGORITHM) {
+  throw new Error("No JWT_ALGORITHM. Set JWT_ALGORITHM environment variable.");
 }
