@@ -28,31 +28,6 @@ app.use(
     store: mongoStore,
   })
 );
-//app.use(graphqlAuthMiddleware);
-
-// app.use(
-//   "/graphql",
-//   graphqlHTTP({
-//     schema: graphqlSchema,
-//     rootValue: graphqlResolver,
-//     graphiql: true,
-//     customFormatErrorFn(err) {
-//       if (!err.originalError) {
-//         return err;
-//       }
-//       const {
-//         message,
-//         originalError: { data, code },
-//       } = err;
-//       return {
-//         code,
-//         message,
-//         result: {},
-//         errors: data,
-//       };
-//     },
-//   })
-// );
 
 app.use("/api/v1/user", userRouter.Router());
 
