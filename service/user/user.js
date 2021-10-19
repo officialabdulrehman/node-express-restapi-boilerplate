@@ -22,11 +22,13 @@ class UserService extends ServiceCRUD {
     const user = await userDAO.findByEmail(email);
     if (!(await verifyPassword(password, user.password)))
       throw new Error("Invalid Password");
-    const token = genToken({ id: user.id, email: user.email, role: user.role });
+    const tokens = genToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
     return {
-      auth: {
-        token: token,
-      },
+      auth: tokens,
       profile: this.transformUser(user),
     };
   }
