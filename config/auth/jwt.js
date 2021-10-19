@@ -28,8 +28,8 @@ export const genToken = (data) => {
     iat: _time(),
     exp: _time() + _1hour,
     access_expires_in: _1hour,
-    refreshToken: jwt.sign({ id: data }, REFRESH_TOKEN_SECRET, {
-      expiresIn: "30d",
+    refreshToken: jwt.sign({ id: data.id }, REFRESH_TOKEN_SECRET, {
+      expiresIn: "15d",
       algorithm: JWT_ALGORITHM,
     }),
     refresh_iat: _time(),
@@ -40,4 +40,36 @@ export const genToken = (data) => {
 
 export const verifyToken = (token) => {
   return jwt.verify(token, SERVER_SECRET, { algorithms: [JWT_ALGORITHM] });
+};
+
+export const verifyRefreshToken = (refreshToken) => {
+  if (!refreshToken) throw new Error("Internal server error");
+  let decodedToken = null;
+  try {
+    decodedToken = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
+  } catch (err) {
+    const error = new Error("Invalid Token");
+    error.data = [
+      {
+        param: "refreshToken",
+        location: "body",
+        value: refreshToken,
+      },
+    ];
+    error.code = 401;
+    throw error;
+  }
+  if (!decodedToken) {
+    const error = new Error("Invalid Token");
+    error.data = [
+      {
+        param: "refreshToken",
+        location: "body",
+        value: refreshToken,
+      },
+    ];
+    error.code = 401;
+    throw error;
+  }
+  return decodedToken.id;
 };

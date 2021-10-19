@@ -62,6 +62,12 @@ userRouter.post("/signin", [...SignValidator], async (req, res, next) => {
   response(res, result);
 });
 
+userRouter.post("/refresh-token", [], async (req, res, next) => {
+  restApiValidation(req, res, next);
+  const result = await userService.refreshToken(req.body.refreshToken);
+  response(res, result);
+});
+
 userRouter.get("/profile/get", [AuthMiddleware()], async (req, res, next) => {
   restApiValidation(req, res, next);
   const result = await userService.getSelfProfile(req.user.id);

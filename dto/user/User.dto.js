@@ -7,4 +7,5 @@ export class UserDTO extends DTO {
   dateOfBirth = undefined;
   phoneNumber = undefined;
   role = Roles.USER;
+  //reauth - for refreshing token - if user has reset passsword, don't send new token - to protect a user if password compromised
 }

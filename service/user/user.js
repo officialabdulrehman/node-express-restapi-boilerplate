@@ -2,7 +2,11 @@ import { ServiceCRUD } from "../service.crud";
 import { userDAO } from "../../dao/user/user";
 
 import { UserDTO } from "../../dto/user/User.dto";
-import { verifyPassword, genToken } from "../../config/auth/jwt";
+import {
+  verifyPassword,
+  genToken,
+  verifyRefreshToken,
+} from "../../config/auth/jwt";
 
 class UserService extends ServiceCRUD {
   transformUser(user) {
@@ -13,8 +17,7 @@ class UserService extends ServiceCRUD {
   async signup(data) {
     const hashedPassword = await genPassword(data.password);
     const user = await this.create({ ...data, password: hashedPassword });
-    delete user["password"];
-    return user;
+    return this.transformUser(user);
   }
 
   async signin(data) {
@@ -36,6 +39,20 @@ class UserService extends ServiceCRUD {
   async getSelfProfile(userId) {
     const user = await userDAO.findById(userId);
     return this.transformUser(user);
+  }
+
+  async refreshToken(refreshToken) {
+    const userId = verifyRefreshToken(refreshToken);
+    const user = await userDAO.findById(userId);
+    const tokens = genToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+    return {
+      auth: tokens,
+      profile: this.transformUser({ ...user }),
+    };
   }
 }
 

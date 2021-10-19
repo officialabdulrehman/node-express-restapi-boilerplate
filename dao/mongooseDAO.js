@@ -100,7 +100,7 @@ export class MongooseDAO {
       error.code = 404;
       throw error;
     }
-    return result;
+    return extractFields(this.createDTO(), result);
   }
 
   async update(id, record) {
