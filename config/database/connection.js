@@ -8,7 +8,6 @@ export const DBConnect = async (mongoUrl) => {
     mongoose
       .connect(mongoUrl)
       .then((ins) => {
-        /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
         console.log("Mongo connected!!!");
         console.log(
           `Using mongo host '${mongoose.connection.host}' and port '${mongoose.connection.port}'`

@@ -16,7 +16,7 @@ export const restApiValidation = (req, res, next) => {
       };
     });
     error.code = 400;
-    return next(error);
+    throw error;
   }
   return true;
 };
@@ -68,6 +68,7 @@ export const mongoID = (value, { path }) => {
 
 export const defaultErrorHandler = (err, req, res, next) => {
   const { code, message, data } = err;
+  console.log(err);
   let statusCode = code;
   if (statusCode == 11000) statusCode = 409;
   res.status(statusCode || 500).json({

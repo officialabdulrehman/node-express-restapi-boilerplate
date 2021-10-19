@@ -44,3 +44,7 @@ export const flattenObj = (obj, keys = []) => {
 export const isPrimitive = (test) => {
   return test !== Object(test);
 };
+
+export const createEnum = (object) => {
+  return Object.freeze(object);
+};

@@ -10,7 +10,6 @@ export const MONGODB_URI = prod
 export const PORT = process.env.PORT;
 export const AUTH_HEADER = process.env["AUTH_HEADER"];
 export const SERVER_SECRET = process.env["SERVER_SECRET"];
-export const SESSION_SECRET = process.env["SESSION_SECRET"];
 export const JWT_ALGORITHM = process.env["JWT_ALGORITHM"];
 export const ACCESS_TOKEN_EXPIRATION_TIME =
   process.env["ACCESS_TOKEN_EXPIRATION_TIME"];
@@ -35,12 +34,6 @@ if (!ACCESS_TOKEN_EXPIRATION_TIME) {
 
 if (!AUTH_HEADER) {
   throw new Error("No AUTH_HEADER. Set AUTH_HEADER environment variable.");
-}
-
-if (!SESSION_SECRET) {
-  throw new Error(
-    "No SESSION_SECRET. Set SESSION_SECRET environment variable."
-  );
 }
 
 if (!SERVER_SECRET) {

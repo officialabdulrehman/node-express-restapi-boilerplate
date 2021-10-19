@@ -6,7 +6,10 @@ import { query } from "express";
 
 export class UserDAO extends MongooseDAO {
   async findByEmail(email) {
+    //Maybe add a check if email was provided to this function
     const result = await this.find({ email }, 1, 1);
+    if (result.data.length <= 0)
+      throw new Error(`User with email "${email}" not found`);
     return result.data[0];
   }
 
