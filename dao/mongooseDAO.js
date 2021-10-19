@@ -30,6 +30,7 @@ export class MongooseDAO {
     page = 1,
     perPage = 10,
     populate = [],
+    omit = {},
     sort = { createdAt: DBSort.DESCENDING }
   ) {
     if (page < 1) {
@@ -47,7 +48,7 @@ export class MongooseDAO {
     let skip = (page - 1) * perPage;
     skip = page > 1 ? skip - 1 : skip;
     const limit = page > 1 ? perPage + 2 : perPage + 1;
-    let query = this.model.find(condition);
+    let query = this.model.find(condition, omit);
     for (const p of populate) {
       query = query.populate(p);
     }
@@ -80,10 +81,14 @@ export class MongooseDAO {
     return result;
   }
 
-  async findById(Id, populate = []) {
+  async findById(Id, populate = [], omit = {}) {
     const id = ID(Id);
-    const result = await this.find({ _id: id }, 1, 1, populate);
-    if (result.data.length <= 0) {
+    let query = this.model.findById(id, omit);
+    for (const p of populate) {
+      query = query.populate(p);
+    }
+    let result = await query;
+    if (!result) {
       const error = new Error(`Record with id ${id} not found.`);
       error.data = [
         {
@@ -95,7 +100,7 @@ export class MongooseDAO {
       error.code = 404;
       throw error;
     }
-    return result.data[0];
+    return result;
   }
 
   async update(id, record) {

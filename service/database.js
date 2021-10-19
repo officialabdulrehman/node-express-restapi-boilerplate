@@ -14,6 +14,7 @@ export class DatabaseService {
     page = 1,
     perPage = 10,
     populate = [],
+    omit = {},
     sort = { createdAt: DBSort.DESCENDING }
   ) {
     if (page < 1) {
@@ -26,7 +27,7 @@ export class DatabaseService {
     skip = page > 1 ? skip - 1 : skip;
     const limit = page > 1 ? perPage + 2 : perPage + 1; // get one extra result for checking more records
 
-    let query = this.model.find(cond);
+    let query = this.model.find(cond, omit);
     for (const p of populate) {
       query = query.populate(p);
     }
@@ -57,14 +58,18 @@ export class DatabaseService {
     return result;
   }
 
-  async findById(Id, populate = []) {
+  async findById(Id, populate = [], omit = {}) {
     const id = ID(Id);
-    const result = await this.findById({ _id: id }, populate);
+    let query = this.model.findById(id, omit);
+    for (const p of populate) {
+      query = query.populate(p);
+    }
+    let result = await query;
+    //const result = await this.model.findById({ _id: id }, populate); // ADD Omit to not fetch some info
     if (result.data.length == 0)
       throw new Error(`record with id ${id} not found`);
 
-    const user = result.data[0];
-    return user;
+    return result.data[0];
   }
 
   async update(Id, record, existing) {
